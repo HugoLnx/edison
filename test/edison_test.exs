@@ -127,4 +127,19 @@ defmodule EdisonTest do
     end
     assert Edison.state_of(:circuit_that_rescue_from_any_error) == {:unavailable, :circuit_open}
   end
+
+  test "rescue from error when it match a pattern" do
+    circuit_breaker :circuit_that_rescue_with_pattern_matching do
+      raise %Error1{term: :critical}
+    end
+    assert true # Nothing failed if arrived here
+  end
+
+  test "does not rescue from error if the error do not match" do
+    assert_raise(Error1, fn ->
+      circuit_breaker :circuit_that_rescue_with_pattern_matching do
+        raise %Error1{term: :normal}
+      end
+    end)
+  end
 end

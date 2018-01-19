@@ -23,4 +23,14 @@ config :edison, :circuit_breaker,
     threshold_interval: 10000,
     reset_after: 1000,
     rescue_from: %{except: [Support.Error1]}
+  ],
+  circuit_that_rescue_with_pattern_matching: [
+    threshold: 1,
+    threshold_interval: 10000,
+    reset_after: 1000,
+    rescue_from: %{
+      __struct__: Support.Error1,
+      __exception__: true,
+      term: :critical,
+    }
   ]
